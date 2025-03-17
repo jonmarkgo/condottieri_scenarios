@@ -20,7 +20,7 @@ import os.path
 
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from condottieri_common.translation_compat import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.validators import RegexValidator
