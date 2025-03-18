@@ -55,6 +55,10 @@ class ScenarioAdmin(admin.ModelAdmin):
 class ContenderAdmin(admin.ModelAdmin):
 	inlines = [HomeInline, SetupInline, TreasuryInline,]
 	
+class SetupAdmin(admin.ModelAdmin):
+	list_display = ('contender', 'area', 'unit_type')
+	ordering = ['contender', 'area']
+
 class CountryAdmin(admin.ModelAdmin):
 	list_display = ('name', 'static_name')
 
@@ -121,3 +125,4 @@ admin.site.register(scenarios.CityRandomIncome, CityRandomIncomeAdmin)
 admin.site.register(scenarios.Border) 
 admin.site.register(scenarios.Religion) 
 admin.site.register(scenarios.TradeRoute, TradeRouteAdmin)
+admin.site.register(scenarios.Setup, SetupAdmin)

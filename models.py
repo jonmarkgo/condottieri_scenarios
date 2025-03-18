@@ -290,7 +290,7 @@ class Religion(models.Model, metaclass=TransMeta):
         return str(self.name)
 
 def get_coat_upload_path(instance, filename):
-    return "scenarios/coats/coat-%s.png" % instance.static_name
+    return "scenarios/badges/badge-%s.png" % instance.static_name
 
 class Country(models.Model, metaclass=TransMeta):
     name = models.CharField(_("name"), max_length=50)
@@ -722,20 +722,31 @@ class Setup(models.Model):
         verbose_name_plural = _("initial setups")
 
     def save(self, *args, **kwargs):
+        # Skip validation if we're updating an existing setup
         if not self.id:
+            # Validate unit type
             if not self.area.accepts_type(self.unit_type):
                 raise WrongUnitType(_("This unit type is not allowed in this area"))
+            
+            # Check if area is disabled
             try:
                 DisabledArea.objects.get(scenario=self.contender.scenario, area=self.area)
-            except ObjectDoesNotExist:
-                try:
-                    Setup.objects.get(contender__scenario=self.contender.scenario, area=self.area, unit_type=self.unit_type)
-                except ObjectDoesNotExist:
-                    super(Setup, self).save(*args, **kwargs)
-                else:
-                    raise AreaIsOccupied(_("You cannot place two units of the same type on the same area"))
-            else:
                 raise AreaNotAllowed(_("This area is disabled"))
+            except ObjectDoesNotExist:
+                pass
+            
+            # Check for existing setup of same type in same area
+            try:
+                existing = Setup.objects.get(
+                    contender__scenario=self.contender.scenario,
+                    area=self.area,
+                    unit_type=self.unit_type
+                )
+                raise AreaIsOccupied(_("You cannot place two units of the same type on the same area"))
+            except ObjectDoesNotExist:
+                pass
+        
+        super(Setup, self).save(*args, **kwargs)
 
     def _get_editor(self):
         return self.contender.scenario.editor

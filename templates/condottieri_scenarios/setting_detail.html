@@ -77,9 +77,8 @@
 	});
 
 	function makeLayout() {
-		var MEDIA_URL = "{{ MEDIA_URL }}";
 		var viewer_opts = {
-			src: MEDIA_URL + "{{ setting.board }}",
+			src: "{% static 'machiavelli/img/' %}{{ setting.board }}",
 			ui_disabled: true,
 			zoom: "fit",
 			zoom_max: 100,
