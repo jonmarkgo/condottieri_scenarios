@@ -1,12 +1,14 @@
 {% extends 'condottieri_scenarios/base.html' %}
 
 {% load i18n %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block head_title %}{% trans "Edit area" %}{% endblock %}
 
 {% block extra_head %}
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
 <style type="text/css">
 #wrapper {
 	overflow: show;
@@ -42,9 +44,9 @@
 
 <div id="area_map">
 	<img src="{{MEDIA_URL}}/{{ setting.board }}" />
-	<img id="af_token" class="token" src="{{STATIC_URL}}condottieri_scenarios/img/AF.png" />
-	<img id="g_token" class="token" src="{{STATIC_URL}}condottieri_scenarios/img/G.png" />
-	<img id="control_token" class="token" src="{{STATIC_URL}}condottieri_scenarios/img/control.png" />
+	<img id="af_token" class="token" src="{% static 'condottieri_scenarios/img/AF.png' %}" />
+	<img id="g_token" class="token" src="{% static 'condottieri_scenarios/img/G.png' %}" />
+	<img id="control_token" class="token" src="{% static 'condottieri_scenarios/img/control.png' %}" />
 </div>
 
 <div>
@@ -62,7 +64,7 @@
 
 <p>{% blocktrans with setting.title as title %}You can use this form to edit or create a new area for the setting "{{ title }}".{% endblocktrans %}</p>
 
-<form action="." method="post" accept-charset="utf-8" class="uniForm">
+<form method="post" action="{{ request.path }}" accept-charset="utf-8" class="uniForm">
 {% csrf_token %}
 {{ form|crispy }}
 

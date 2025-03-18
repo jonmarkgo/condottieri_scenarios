@@ -10,7 +10,7 @@
 <div class="section">
 <h1>{% trans "Countries" %}</h1>
 
-<p><a href="{% url "country_create" %}">{% trans "New country" %}</a></p>
+<p><a href="{% url "scenarios:country_create" %}">{% trans "New country" %}</a></p>
 
 <table>
 <thead><tr>
@@ -19,8 +19,8 @@
 </tr></thead>
 {% for c in object_list %}
 <tr {% if not c.enabled %}class="disabled"{% endif %}>
-<td class="data_c" style="background: #{{ c.color }}"><img src="{{ MEDIA_URL }}scenarios/badges/icon-{{ c.static_name }}.png" /></td>
-<td><a href="{% url "country_detail" c.static_name %}">{{ c.name }}</a></td>
+<td class="data_c" style="background: #{{ c.color }}"><img src="/media/scenarios/badges/icon-{{ c.static_name }}.png" /></td>
+<td><a href="{% url "scenarios:country_detail" c.static_name %}">{{ c.name }}</a></td>
 </tr>
 {% endfor %}
 </table>

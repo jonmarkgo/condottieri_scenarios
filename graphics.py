@@ -90,7 +90,7 @@ def make_scenario_thumb(scenario, w, h, dirname):
         fd = scenario.map_path
         outfile= scenario.thumbnail_path
         im = Image.open(fd)
-        im.thumbnail(size, Image.ANTIALIAS)
+        im.thumbnail(size, Image.Resampling.LANCZOS)
         ensure_dir(outfile)
         im.save(outfile, "JPEG")
 
@@ -148,31 +148,31 @@ def make_country_tokens(sender, instance, created, raw, **kwargs):
         ## generate 24x24 icon
         if coat:
                 icon = coat.copy()
-                icon.thumbnail((24,24), Image.ANTIALIAS)
+                icon.thumbnail((24,24), Image.Resampling.LANCZOS)
                 icon.save(os.path.join(BADGES_DIR, "icon-%s.png" % instance.static_name))
         ## generate Army token
         army_base = Image.open(os.path.join(TEMPLATES_DIR, "army-base.png"))
         draw = ImageDraw.Draw(army_base)
-        draw.ellipse((5, 5, 45, 45), fill="#%s" % instance.color)
+        draw.ellipse((5, 5, 45, 45), fill="#%s" % instance.color if instance.color else "#CCCCCC")
         del draw
         if coat:
                 a_coat = coat.copy()
-                a_coat.thumbnail((26,26), Image.ANTIALIAS)
+                a_coat.thumbnail((26,26), Image.Resampling.LANCZOS)
                 army_base.paste(a_coat, (12,12), a_coat)
         army_base.save(os.path.join(TOKENS_DIR, "A-%s.png" % instance.static_name))
         ## generate Garrison token
         garrison_base = Image.open(os.path.join(TEMPLATES_DIR, "garrison-base.png"))
         draw = ImageDraw.Draw(garrison_base)
-        draw.ellipse((3, 3, 30, 30), fill="#%s" % instance.color)
+        draw.ellipse((3, 3, 30, 30), fill="#%s" % instance.color if instance.color else "#CCCCCC")
         del draw
         if coat:
                 g_coat = coat.copy()
-                g_coat.thumbnail((19, 19), Image.ANTIALIAS)
+                g_coat.thumbnail((19, 19), Image.Resampling.LANCZOS)
                 garrison_base.paste(g_coat, (8,8), g_coat)
         garrison_base.save(os.path.join(TOKENS_DIR, "G-%s.png" % instance.static_name))
         ## generate Fleet token
         fleet_base = Image.open(os.path.join(TEMPLATES_DIR, "fleet-base.png"))
-        rectangle = round_rectangle((49,24), 7, "#%s" % instance.color)
+        rectangle = round_rectangle((49,24), 7, "#%s" % instance.color if instance.color else "#CCCCCC")
         fleet_base.paste(rectangle, (2, 2), rectangle)
         ship = Image.open(os.path.join(TEMPLATES_DIR, "ship-icon.png"))
         fleet_base.paste(ship, (0,0), ship)
@@ -182,9 +182,9 @@ def make_country_tokens(sender, instance, created, raw, **kwargs):
         ## generate Control token
         control = Image.new("RGBA", (24, 24))
         draw = ImageDraw.Draw(control)
-        draw.ellipse((0, 0, 24, 24), fill="#%s" % instance.color, outline="#000000")
+        draw.ellipse((0, 0, 24, 24), fill="#%s" % instance.color if instance.color else "#CCCCCC", outline="#000000")
         del draw
         control.save(os.path.join(TOKENS_DIR, "control-%s.png" % instance.static_name))
         ## generate Home flag
-        flag = make_flag("#%s" % instance.color)
+        flag = make_flag("#%s" % instance.color if instance.color else "#CCCCCC")
         flag.save(os.path.join(TOKENS_DIR, "flag-%s.png" % instance.static_name))

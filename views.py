@@ -35,13 +35,14 @@ import condottieri_scenarios.models as models
 import condottieri_scenarios.forms as forms
 from condottieri_scenarios.graphics import make_scenario_map
 
-reverse_lazy = lambda name=None, *args : lazy(reverse, str)(name, args=args)
+def reverse_lazy(name, *args, **kwargs):
+	return lazy(reverse, str)(name, args=args, kwargs=kwargs)
 
 class CreationAllowedMixin(object):
 	""" A mixin requiring a user to be authenticated and being editor or admin """
 	def dispatch(self, request, *args, **kwargs):
 		if not request.user.is_authenticated or \
-		not request.user.profile.is_editor:
+		(not request.user.profile.is_editor and not request.user.is_staff):
 			raise http.Http404
 		return super(CreationAllowedMixin, self).dispatch(request, *args, **kwargs)
 
@@ -473,7 +474,7 @@ class AreaEditMixin(CreationAllowedMixin):
 		else:
 			setting = self.setting
 		if setting.user_allowed(self.request.user):
-			if setting.in_play:					
+			if setting.in_play and not self.request.user.is_staff:					
 				context['protected'] = True
 				return context
 		else:
@@ -569,13 +570,13 @@ class AreaCreateView(AreaEditMixin, CreateView):
 
 class AreaUpdateView(AreaEditMixin, UpdateView):
 	context_object_name = 'area'
-	
+
 	def get_context_data(self, **kwargs):
 		formset = forms.areaborderformset_factory(self.object.setting)
 		context = super(AreaUpdateView, self).get_context_data(formset, **kwargs)
 		context['setting'] = self.object.setting
 		return context
 
-	def get_success_url(self, **kwargs):
-		return reverse_lazy('setting_areas', self.object.setting.slug)
+	def get_success_url(self):
+		return reverse_lazy('scenarios:area_edit', kwargs={'pk': self.object.pk})
 

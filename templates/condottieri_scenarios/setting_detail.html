@@ -1,10 +1,12 @@
 {% extends 'condottieri_scenarios/base.html' %}
 
 {% load i18n %}
+{% load static %}
 
 {% block head_title %}{{ setting.title }}{% endblock %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/jquery.iviewer.css' %}" />
 <style type="text/css">
 #map {
 	position: relative;
@@ -22,10 +24,10 @@
 <h1>{{ setting.title }}</h1>
 <p>{{ setting.description }}</p>
 
-<p><a href="{% url "setting_disasters" setting.slug %}">{% trans "Disasters tables" %}</a></p>
+<p><a href="{% url "scenarios:setting_disasters" setting.slug %}">{% trans "Disasters tables" %}</a></p>
 
 {% if editable %}
-<p><a href="{% url "setting_areas" setting.slug %}">{% trans "Edit areas" %}</a></p>
+<p><a href="{% url "scenarios:setting_areas" setting.slug %}">{% trans "Edit areas" %}</a></p>
 {% endif %}
 
 <h2>{% trans "Scenarios" %}</h2>
@@ -40,11 +42,11 @@
 </tr></thead>
 {% for s in setting.scenario_set.all %}
 <tr {% if not s.enabled %}class="disabled"{% endif %}>
-<td><a href="{% url "scenario_detail" s.name %}">{{ s.title }}</a></td>
+<td><a href="{% url "scenarios:scenario_detail" s.name %}">{{ s.title }}</a></td>
 <td class="data_c">{{ s.start_year }}</td>
 <td class="data_c">{{ s.number_of_players }}</td>
-<td><a href="{% url "ranking" "scenario" s.name %}">{% trans "See scores" %}</a></td>
-<td><a href="{% url "scenario_stats" s.name %}">{% trans "See stats" %}</a></td>
+<td><a href="{% url "machiavelli:ranking" "scenario" s.name %}">{% trans "See scores" %}</a></td>
+<td><a href="{% url "scenarios:scenario_stats" s.name %}">{% trans "See stats" %}</a></td>
 </tr>
 {% endfor %}
 </table>
@@ -59,10 +61,18 @@
 {% endblock %}
 
 {% block extra_body %}
-<script src="{{ STATIC_URL }}js/jquery.mousewheel.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}js/jquery.iviewer.min.js" type="text/javascript"></script>
+<!-- Load jQuery first -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Load jQuery UI -->
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
+
+<!-- Load jQuery plugins -->
+<script src="{% static 'js/jquery.mousewheel.js' %}"></script>
+<script src="{% static 'js/jquery.iviewer.min.js' %}"></script>
+
 <script type="text/javascript">
-	$(function() {
+	$(document).ready(function() {
 		makeLayout();
 	});
 
@@ -82,6 +92,5 @@
 		$("#map").iviewer(viewer_opts);
 	}
 </script>
-
 
 {% endblock %}

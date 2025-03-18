@@ -12,7 +12,7 @@
 <table>
 <tr><td>{% trans "Excommunication power" %}</td><td>{{ country.can_excommunicate|yesno }}</td></tr>
 <tr><td>{% trans "Available special units" %}</td><td>{{ country.special_units.all|join:" ," }}</td></tr>
-<tr><td>{% trans "Editor" %}</td><td><a href="{% url "profile_detail" country.editor %}">{{ country.editor }}</a></td></tr>
+<tr><td>{% trans "Editor" %}</td><td><a href="{% url "profiles:profile_detail" country.editor %}">{{ country.editor }}</a></td></tr>
 </table>
 
 {% if user_can_edit %}
